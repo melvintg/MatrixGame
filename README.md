@@ -4,5 +4,5 @@ The game consist in get a matrix determinant non-zero if you are player 1 or zer
 All possible matrix determinants are computed each turn to compute who is winning.
 Online game also available.
 
-![Front](FrontMatrixGame.jpg){:height="50%" width="50%"}
-![Back](BackMatrixGame.jpg){:height="50%" width="50%"}
+![Front](FrontMatrixGame.jpg =100x20)
+![Back](BackMatrixGame.jpg =100x20)
