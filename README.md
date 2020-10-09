@@ -5,5 +5,4 @@ All possible matrix determinants are computed each turn to compute who is winnin
 Online game also available.
 
 
-<img src="FrontMatrixGame.jpg" height="50%" width="50%">
-<img src="BackMatrixGame.jpg" height="50%" width="50%">
+<img src="FrontMatrixGame.jpg" height="40%" width="40%"> <img src="BackMatrixGame.jpg" height="40%" width="40%">
