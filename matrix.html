@@ -1,0 +1,181 @@
+
+<html>
+<head>
+<title>Game</title>
+<body>
+<div id="game"></div>
+<div align="left">
+  <span id='turn'></span>
+</div>
+
+<div align="left">
+  <p></p>
+  <div>Number of possibilities to win: </div>
+  <div id='player0'></div>
+  <div id='player1'></div>
+</div>
+
+
+<style>
+  table {
+    border-collapse:collapse;
+  }
+
+  td {
+    background-color: #069;
+    border: 3px solid white;
+    font-size:80px;
+    color:#ffffff;
+    border-radius: 10px 10px 10px 10px;
+  }
+</style>
+
+<script>
+
+
+var N_SIZE = 3;
+var matrix = createArray(N_SIZE*N_SIZE, null);
+var db = [];
+var db2 = [];
+var boxes = [];
+var EMPTY = "&nbsp;";
+var moves = 0;
+var turn = 0;
+
+gen(db,[]);
+
+function createArray(len, itm) {
+  var arr1 = [itm],
+  arr2 = [];
+  while (len > 0) {
+    if (len & 1)
+      arr2 = arr2.concat(arr1);
+    arr1 = arr1.concat(arr1);
+    len >>>= 1;
+  }
+  return arr2;
+}
+
+function gen(data, aux) {
+  if (aux.length >= 9)
+    data.push({"values":aux, "det":det(aux)});
+  else {
+   var a = aux.slice();
+   a.push(0);
+   var b = aux.slice();
+   b.push(1);
+   gen(data, a);
+   gen(data, b);
+  }
+}
+
+function det(vec) {
+  return vec[0]*(vec[4]*vec[8]-vec[5]*vec[7]) - vec[1]*(vec[3]*vec[8]-vec[5]*vec[6]) + vec[2]*(vec[3]*vec[7]-vec[4]*vec[6]);
+}
+
+
+  /*
+   * Initializes the Tic Tac Toe board and starts the game.
+   */
+  function init() {
+    var board = document.createElement('table');
+    board.setAttribute("border", 1);
+    board.setAttribute("cellspacing", 0);
+
+    var identifier = 1;
+    for (var i = 0; i < N_SIZE; i++) {
+      var row = document.createElement('tr');
+      board.appendChild(row);
+      for (var j = 0; j < N_SIZE; j++) {
+        var cell = document.createElement('td');
+        cell.setAttribute('height', 120);
+        cell.setAttribute('width', 120);
+        cell.setAttribute('align', 'center');
+        cell.setAttribute('valign', 'center');
+        cell.id = "pos" + (3*i+j);
+        cell.addEventListener("click", set);
+        row.appendChild(cell);
+        boxes.push(cell);
+      }
+    }
+
+    document.getElementById("game").appendChild(board);
+    startNewGame();
+  }
+
+
+  function startNewGame() {
+    matrix = createArray(N_SIZE*N_SIZE, null);
+    moves = 0;
+    turn = Math.round(Math.random());
+    document.getElementById('turn').innerHTML = 'Turn: Player ' + turn;
+
+    document.getElementById("player0").innerHTML = "Player 0: " + 512;
+    document.getElementById("player1").innerHTML = "Player 1: " + 512;
+
+    boxes.forEach(function (boxValue) {
+      boxValue.innerHTML = EMPTY;
+    });
+  }
+
+
+  /*
+   * Sets clicked square and also updates the turn.
+   */
+  function set() {
+    if (this.innerHTML !== EMPTY) {
+      return;
+    }
+
+    // Update visual box
+    this.innerHTML = turn;
+    moves++;
+
+    // Add value to matrix.
+    var idCell = this.id;
+    matrix[idCell.substr(idCell.length -1)] = turn;
+
+    // Create sub-database
+    var db2 = db.slice();
+    for (var i = 0; i < 9; i++) {
+      if (matrix[i] != null) {
+        var j = 0;
+        var len = db2.length;
+        for (var count = 0; count < len; count++) {
+          if (db2[j].values[i] != matrix[i]) {
+            db2.splice(j,1);
+            continue;
+          }
+          j++;
+        }
+      }
+    }
+
+    // Compute results
+    var resPlayer0 = 0;
+    var resPlayer1 = 0;
+
+    for (var i = 0; i < db2.length; i++) {
+      if (db2[i].det == 0) {
+        resPlayer0++;
+      } else {
+        resPlayer1++;
+      }
+    }
+
+
+    if (moves >= 9 || (resPlayer0 * resPlayer1 == 0)) {
+      alert('Winner: Player ' + (resPlayer0 == 0 ? 1 : 0));
+      startNewGame();
+    } else {
+      turn = turn === 1 ? 0 : 1;
+      document.getElementById("player0").innerHTML = "Player 0: " + resPlayer0;
+      document.getElementById("player1").innerHTML = "Player 1: " + resPlayer1;
+      document.getElementById('turn').innerHTML = 'Turn: Player ' + turn;
+    }
+
+  }
+
+  init();
+</script>
+      </body>
